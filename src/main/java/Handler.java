@@ -23,10 +23,11 @@ public class Handler implements RequestHandler<SNSEvent, ArrayList<Object>> {
 
     @Override
     public ArrayList<Object> handleRequest(SNSEvent event, Context context) {
-        String destinatario = event.getRecords().get(0).getSNS().getMessage();
+
+        AmazonSimpleEmailService client = createClient();
+        SendEmailRequest request = createRequest(event.getRecords().get(0).getSNS().getMessage());
+
         try {
-            AmazonSimpleEmailService client = createClient();
-            SendEmailRequest request = createRequest(destinatario);
             client.sendEmail(request);
         } catch (Exception ex) {
             context.getLogger().log(ex.getMessage());
